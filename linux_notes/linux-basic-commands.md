@@ -172,3 +172,133 @@ total 16
 -rw-rw-r-- 1 ec2-user ec2-user  0 Aug 11 12:21 newfile　#更新されたタイムスタンプ
 -rw-rw-r-- 1 ec2-user ec2-user 14 Aug 11 11:45 readme.txt
 ```
+
+## ファイルを削除するコマンド[ rm ]
+- rm は “remove”（削除する）の略
+- rmコマンドは指定したファイルを削除します。削除されたファイルはボミ箱に移動せず、即座に完全削除されるため、注意が必要です。
+- 例
+```bash
+ec2-user:~/environment/linux-practice-log (main) $ ls
+hello.c.2  hello.c.3  hello.js  newfile  readme.txt
+ec2-user:~/environment/linux-practice-log (main) $ rm newfile 
+ec2-user:~/environment/linux-practice-log (main) $ ls
+hello.c.2  hello.c.3  hello.js  readme.txt
+```
+- ディレクトリを削除する場合は、[ -r オプション]が必要です。
+- 例
+```bash
+ec2-user:~/environment $ rm -r newmkdir/
+```
+- 確認付きメッセージで削除する場合は、[ -i オプション]が必要です。
+- 例
+```bash
+ec2-user:~/environment/linux-practice-log (main) $ rm -i readme.txt 
+rm: remove regular file ‘readme.txt’? yes
+```
+- 空のディレクトリを削除する場合のコマンドは[ rmdir ]です。
+- 例
+```bash
+ec2-user:~/environment/linux-practice-log (main) $ rmdir test
+```
+## ディレクトリを移動するコマンド[ cd ]
+- cd は"change directory"（ディレクトリを変更する）の略指定したディレクトリに移動したり、階層を上下に移動することができます。
+- ../で一つ上の階層に移動できます。
+
+**主な使い方**
+- cd ../：一つ上の階層に移動
+- cd（引数なし）：ホームディレクトリに移動
+- cd ディレクトリ名：指定したディレクトリに移動
+
+- 例
+```bash
+ec2-user:~/environment/linux-practice-log (main) $ cd ../
+ec2-user:~/environment $ cd linux-practice-log/
+ec2-user:~/environment/linux-practice-log (main) $ cd
+ec2-user:~ $ 
+```
+
+## 現在の作業ディレクトリのフルパスを表示するコマンド[ pwd ]
+- pwd は"Print Working Directory"の略で、現在自分がいるディレクトリの絶対パス（フルパス） を表示します。
+- 例
+```bash
+ec2-user:~/environment/linux-practice-log (main) $ pwd
+/home/ec2-user/environment/linux-practice-log
+```
+**補足**
+- 「絶対パス」とは、ルートディレクトリ / からの完全なパス。
+- 作業ディレクトリを確認することで、誤って別ディレクトリで作業するミスを防げます。
+- 「相対パス」とは、現在の作業ディレクトリを基準に指定する書き方。
+- / から始まらない
+- 絶対パスは「福岡県北九州市八幡西区黒崎2-16-3」のように、都道府県から始まる住所のイメージです。
+相対パスは「黒崎2-16-3」のように、現在地（作業ディレクトリ）を前提として省略して書くイメージです。
+- 例
+```bash
+絶対パス   /home/ec2-user/environment
+住所例     福岡県北九州市八幡西区黒崎2-16-3
+
+相対パス   linux-practice-log
+住所例     黒崎2-16-3（八幡西区にいる前提）
+```
+
+## ブロブについて
+- 記号を使って該当ファイルを探すコマンドを 「グロブ（glob）」 と呼びます。
+- グロブは、シェルがパターンに一致するファイル名を自動的に展開する仕組みです。
+
+**主なグロブの記号**
+
+| パターン | 意味 | 例 |
+|----------|------|----|
+| * | 任意の文字列（0文字以上） | *.txt → すべての .txt ファイル |
+| ? | 任意の1文字 | t?.sh → t1.sh, t2.sh |
+| [abc] | 指定した1文字 | [ab]* → aまたはbで始まる |
+| [a-z] | 範囲指定1文字 | [0-9]* → 数字で始まる |
+| [^abc] | 指定文字以外の1文字 | [^ab]* → a,b以外で始まる |
+| {パターン1,パターン2} | 複数パターン展開 | {b*,c*} → bまたはcで始まる
+
+- 例
+```bash
+ec2-user:~/environment/linux-practice-log (main) $ ls -l [ab]*
+-rw-rw-r-- 1 ec2-user ec2-user 0 Aug 12 11:37 a.1
+-rw-rw-r-- 1 ec2-user ec2-user 0 Aug 12 11:37 b.1
+ec2-user:~/environment/linux-practice-log (main) $ ls -l *.1
+-rw-rw-r-- 1 ec2-user ec2-user 0 Aug 12 11:37 a.1
+-rw-rw-r-- 1 ec2-user ec2-user 0 Aug 12 11:37 b.1
+-rw-rw-r-- 1 ec2-user ec2-user 0 Aug 12 11:37 c.1
+ec2-user:~/environment/linux-practice-log (main) $ ls -l [a-c]*
+-rw-rw-r-- 1 ec2-user ec2-user 0 Aug 12 11:37 a.1
+-rw-rw-r-- 1 ec2-user ec2-user 0 Aug 12 11:37 b.1
+-rw-rw-r-- 1 ec2-user ec2-user 0 Aug 12 11:37 c.1
+ec2-user:~/environment/linux-practice-log (main) $ ls -l [^ab]*
+-rw-rw-r-- 1 ec2-user ec2-user  0 Aug 12 11:37 c.1
+-rw-rw-r-- 1 ec2-user ec2-user 26 Aug 11 11:45 hello.c.2
+-rw-rw-r-- 1 ec2-user ec2-user 26 Aug 11 11:44 hello.c.3
+-rw-rw-r-- 1 ec2-user ec2-user 32 Aug 11 11:44 hello.js
+-rw-rw-r-- 1 ec2-user ec2-user  0 Aug 12 11:37 t2.sh
+-rw-rw-r-- 1 ec2-user ec2-user  0 Aug 12 11:37 test1.txt
+ec2-user:~/environment/linux-practice-log (main) $ ls -l t?.sh
+-rw-rw-r-- 1 ec2-user ec2-user 0 Aug 12 11:37 t2.sh
+ec2-user:~/environment/linux-practice-log (main) $ ls -l {b*,c*,*est*}
+-rw-rw-r-- 1 ec2-user ec2-user 0 Aug 12 11:37 b.1
+-rw-rw-r-- 1 ec2-user ec2-user 0 Aug 12 11:37 c.1
+-rw-rw-r-- 1 ec2-user ec2-user 0 Aug 12 11:37 test1.txt
+```
+
+## 現在起動しているすべてのプロセスを一覧表示するコマンド　[ ps aux ]
+- 「ピーエス エー ユー エックス（ps aux）」 と呼びます。
+- ps : process status（プロセスの状態）を表示するコマンド
+- a : 他のユーザーのプロセスも含めて表示
+- u : 実行ユーザーや開始時間など、詳細情報を表示
+- x : ターミナルに紐づかないプロセスも表示
+- 例
+```bash
+ec2-user:~/environment/tunagarihiroba (main) $ ps aux 
+USER       PID  %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+ec2-user  1234  0.0  1.2 123456  7890 ?        S    10:15   0:01 puma 3000
+root         1  0.0  0.3  56789  2345 ?        Ss   Aug11   0:05 /sbin/init
+```
+- USER: 実行しているユーザー
+- PID: プロセスID
+- %CPU / %MEM: 使用率
+- START: 開始時間
+- COMMAND: 実行コマンド
+
