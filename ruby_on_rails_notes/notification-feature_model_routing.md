@@ -162,6 +162,98 @@ has_many :passive_relationships, class_name: "Relationship", foreign_key: "follo
 このため、コメントやフォローをトリガーに通知を送受信する場合でも、新しく関連を追加する必要はありません。
 既存の関連を使って、Notification モデルのレコードを作成すれば通知機能は動作します。
 
+### フォロー通知作成処理（重複防止ロジックを含む）
+Memberモデルに以下の記述を追記します。
+```ruby
+class Member < ApplicationRecord
+  def create_notification_follow!(current_member)
+    # 既に通知が存在するかチェック
+    temp = Notification.where(["visitor_id = ? and visited_id = ? and action = ? ",current_member.id, id, 'follow'])
+    
+    # 通知が存在しない場合の条件分岐
+    if temp.blank?
+      # 新規通知の作成
+      notification = current_member.active_notifications.new(
+        visited_id: id,
+        action: 'follow'
+      )
+      
+      # バリデーションチェックと保存
+      notification.save if notification.valid?
+    end
+  end
+end
+```
+
+①`temp = Notification.where(["visitor_id = ? and visited_id = ? and action = ? ",current_member.id, id, 'follow'])`
+- データベースに特定の条件に合う通知がもう存在しているかのチェックを行います。
+- 各部分の意味:
+  - Notification.where(...): Notification（通知）のテーブルの中から、指定した条件に合うものを探します。
+  - visitor_id = ?: ?に、フォローした人（current_member）のIDが入ります。
+  - visited_id = ?: ?に、フォローされた人（このメソッドが動いているMemberインスタンス）のIDが入ります。
+  - action = ?: ?に、アクションの種類である 'follow' が入ります。
+- tempは何？: 一時的な（temporary　テンポラリー）データを格納する変数やフォルダのことです。
+もし同じ通知がすでに存在すればtempにデータが入り、なければ空になります。
+>＊なぜ条件を配列で表すのか？
+>[3.1 条件を文字列だけで表す](https://railsguides.jp/active_record_querying.html)
+>Railsガイドのこの箇所を参考にしました。
+
+②`if temp.blank?`
+- 前のステップで同じ通知が見つからなかった場合（＝tempが空の場合）にだけ、次の「通知作成」の処理に進むようにします。これにより、二重通知を防ぎます。
+
+③`notification = current_member.active_notifications.new(...`
+- current_member.active_notifications: 「current_memberが作成する通知」という関係（アソシエーション）を使って、通知オブジェクトを作ります。これにより、visitor_idにcurrent_member.idが自動でセットされます。
+- visited_id: id: 通知を受け取る人のID（フォローされた人のID）を指定します。
+- action: 'follow': 通知の種類を「フォロー」と設定します。
+- notification: 新しく作られた通知オブジェクトを保存する変数です。この時点ではまだデータベースには保存されていません。
+
+④`notification.save if notification.valid?`
+- notification.valid?: これは「バリデーションチェック」を行うメソッドです。
+- Notificationモデルに設定されたルール（例えば、必須項目が空でないかなど）に違反していないかを自動で確認します。
+- もしルールをすべて満たしていればtrueを返し、一つでも違反があればfalseを返します。
+- notification.save: valid?がtrueを返した場合にだけ、この行が実行され、データベースに通知が保存されます。
+
+このように、このメソッドは「検索 → 判断 → 作成 → 保存」という流れで、安全にフォロー通知を作成する仕組みになっています。
+
+### コメント通知作成処理
+Postモデルに以下の記述を追記します。
+
+```ruby
+class Post < ApplicationRecord
+  def save_notification_comment(current_member, comment_id, visited_id)
+  # 新規通知の作成
+    notification = current_member.active_notifications.new(
+      post_id: id,
+      comment_id: comment_id,
+      visited_id: visited_id,
+      action: 'comment'
+    )
+    # 自分が自分の投稿にコメントしているかチェック
+    if notification.visitor_id == notification.visited_id
+      notification.checked = true
+    end
+    # バリデーションチェックと保存
+    notification.save if notification.valid?
+  end
+end
+```
+
+①`notification = current_member.active_notifications.new(...`
+- current_member.active_notifications.new: 通知を作成する人（current_member）を紐づけて、新しい通知オブジェクトを作っています。これにより、通知のvisitor_idにcurrent_member.idが自動で入ります。
+- post_id: id: どの投稿に対する通知かを指定します。idは、メソッドが呼び出されたPostインスタンス自身のIDです。
+- comment_id: comment_id: どのコメントが原因で通知が作られたかを指定します。
+- visited_id: visited_id: 通知を受け取る人（投稿者）のIDを指定します。
+- action: 'comment': 通知のタイプを「コメント」と設定しています。
+
+②`if notification.visitor_id == notification.visited_id`
+- 何をしているか: 通知を作成した人（visitor_id）と、通知を受け取る人（visited_id）が同じかどうかをチェックしています。
+- これは「自分が自分の投稿にコメントした場合」を判定するための重要な処理です。
+- もし同じだったら: notification.checked = trueというコードが実行され、通知を「確認済み」の状態に設定します。自分で自分の通知を見ても意味がないので、最初から「見終わった」状態にしておくという配慮です。
+
+③`notification.save if notification.valid?`
+- 作成した通知オブジェクトが有効なデータであることを確認してから、データベースに保存します。
+
+このメソッドは、コメントが投稿されるたびに呼び出され、投稿に紐づく通知を安全に作成する役割を担っています。
 
 ## 最後に：
 次回はコントローラーとビューについて解説します。まだ学習中のため、記述に誤りや不足があれば、コメントでご指摘いただけると嬉しいです！！
