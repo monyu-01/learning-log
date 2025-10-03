@@ -66,4 +66,16 @@ def problem10
   end
 end
 
-problem1
+def problem11
+  require 'set'
+
+  n = gets.to_i
+  words = Array.new(n) { gets.chomp }
+  
+  # Set を使って重複を管理し、reverse_each で後ろから走査して
+  # 初めて出た単語だけを出力する
+  seen = Set.new
+  words.reverse_each do |w|
+    puts w if seen.add?(w)  
+  end
+end
