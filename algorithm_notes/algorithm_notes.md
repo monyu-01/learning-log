@@ -33,7 +33,6 @@ puts s[-1]
 ```
 解説
 - s[-1]は、文字列の末尾一文字を取得します。（Rubyのインデックスは負の値で後ろから数えられます。）
-
 ### times
 - 整数に対して回数分だけ繰り返すメソッド
 - ブロック変数 i には、配列などの要素を識別するための0から始まる番号（インデックス）が順番に渡されます。
@@ -126,7 +125,6 @@ puts a
 # 1223
 ```
 参考：[演算子式 項目 多重演算子より](https://docs.ruby-lang.org/ja/latest/doc/spec%3D2foperator.html?utm_source=chatgpt.com)
-
 ### split
 - 文字列を分割して配列化するメソッド
 例１
@@ -156,7 +154,6 @@ puts n.times.map { "(#{a}, #{b})" }.join(", ")
 ```
 ### to_i
 - 数値や文字列を整数（Integer）に変換します。
-
 ### map
 - 配列の各要素に処理を適用して、新しい配列を作るメソッド
 ```
@@ -168,10 +165,8 @@ puts a - b + c
 解説
 - &:to_i は「各要素に対して to_i メソッドを呼ぶ」という省略記法
 - こちらを使用すると数値として扱えるため計算が可能となります。
-
 ### to_f
 - 数値や文字列を浮動小数点数（Float）に変換します。
-
 ### format
 - Ruby標準ライブラリにあるメソッドで、数値や変数を文字列の中に埋め込みながら、桁数や小数点以下の桁数、表示形式に揃えます
 例 小数点以下m桁まで四捨五入して表示します
@@ -188,7 +183,6 @@ puts format("%.#{m}f", n)
 　-  f : 浮動小数点数を固定小数点形式で表示します。
 - nは対象となる数値（第二引数）
 参考：[formatの公式ドキュメント](https://docs.ruby-lang.org/ja/latest/method/Kernel/m/sprintf.html)
-
 ### ％nd
 - decimal（10進数）整数を出力する指定子
 - 幅より数値が小さい場合、デフォルトは「スペース埋め + 右詰め」になります。
@@ -208,7 +202,6 @@ puts format("%03d", n)
 - 文字列の文字数を数値で返す（カウント）。
 - 配列の場合は、要素数で返す。
 - 参考：[length、size、count メソッドの違いまとめ【Ruby】](https://qiita.com/motoki4917/items/ffc89d955e20b91d1014)
-
 ## "%2d" % (i * j)
 - 上記での方法とは別に％（演算子）を使用して計算結果を埋め込みしています。
 - "%2d" の中の % は書式指定の記号です。（参考：[Ruby入門 - 演算子](https://www.tohoho-web.com/ruby/operators.html?utm_source=chatgpt.com)）
@@ -229,21 +222,66 @@ end
  2 |  4 |  6 |  8 | 10 | 12 | 14 | 16 | 18
 ```
 ＊こちら無料の範囲内の問題となっております。
-
 ## Array
 - 任意のRubyオブジェクトを要素として持つことができる配列クラスです。
 参考：[Ruby 3.4 リファレンスマニュアル](https://docs.ruby-lang.org/ja/latest/class/Array.html)
 メモ：[Ruby競プロTips(基本・罠・高速化108 2.7x2.7)](https://zenn.dev/universato/articles/20201210-z-ruby)
 ＊こちらのメモは、Rubyのアルゴリズムの解き方について詳しく説明されていました。自分用のメモとしても残しておきます。
-
 ## reverse_each
 - 各要素に対して逆順にブロックを評価するメソッド。
-参考：[Ruby 3.4 リファレンスマニュアル](https://docs.ruby-lang.org/ja/latest/doc/index.html)
-
+参考：[Ruby 3.4 リファレンスマニュアル]([Ruby 3.4 リファレンスマニュアル](https://docs.ruby-lang.org/ja/latest/doc/index.html))
 ## Set
 - 集合（重複のないオブジェクトの集まり）を表すクラスです。
 - addメソッドは、Setに要素を追加する。
+- 標準ライブラリ（Rubyに最初から付属しているライブラリ）は、requireで呼び出して使用します。
 参考：[Rubyでaddメソッドを使う方法を現役エンジニアが解説](https://magazine.techacademy.jp/magazine/30894)
+
+例 検索ワードの履歴を見る機能
+```
+require 'set'
+
+n = gets.to_i
+words = Array.new(n) { gets.chomp }
+
+seen = Set.new
+words.reverse_each do |w|
+  puts w if seen.add?(w)  
+end
+# 入力：
+4
+red
+green
+blue
+blue
+# 出力：
+blue 
+green
+red
+```
+解説
+`words = Array.new(n) { gets.chomp }`
+- ブロックを渡すと、n回繰り返してブロックを実行し、その戻り値を配列の各要素に入れる動作を行います。
+`seen = Set.new`
+- Set.newは空の集合を生成し、それを変数に代入します。
+`puts w if seen.add?(w)`
+- 未出現なら集合に追加＋true、重複ならnil(false)となり始めてでた単語だけ出力します。
+## include?
+- 配列（Array）、文字列（String）、集合（Set）などで指定した要素と等しい要素を持つときに真を返すメソッド。
+参考：[Ruby 3.4 リファレンスマニュアル](https://docs.ruby-lang.org/ja/latest/method/Array/i/include=3f.html)
+
+## 条件演算子（三項演算子）
+- 「条件式 ? 真の場合の値 : 偽の場合の値」の条件式の結果によってどちらかの値を返す演算子です。
+例
+```
+s = gets.chomp.split
+puts s.include?("red") ? "Yes" : "No"
+# 入力：
+red green blue blue green blue
+# 出力：
+Yes
+```
+参考：[Ruby 3.4 リファレンスマニュアル](https://docs.ruby-lang.org/ja/latest/doc/spec=2foperator.html)
+
 
 ## ４.Rubyのformatで90点止まり…100点を取るまでの試行錯誤
 [【実数をフォーマット指定して出力】複数の実数を出力（paizaランク C 相当）](https://paiza.jp/works/mondai/stdout_primer/stdout_primer__format_real_number_boss)
