@@ -79,3 +79,25 @@ def problem11
     puts w if seen.add?(w)  
   end
 end
+
+def problem12
+  s = gets.chomp.split
+  puts s.include?("red") ? "Yes" : "No"
+end
+
+def problem13
+  equire 'set'
+
+  words = gets.chomp.split
+  seen = Set.new
+
+  words.each do |w|
+    if seen.include?(w)
+      # 同じ単語が出た場合は "already_been" と出力する
+      puts "already_been"
+    else
+      puts w
+      seen.add(w)
+    end
+  end
+end
