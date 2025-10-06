@@ -101,3 +101,25 @@ def problem13
     end
   end
 end
+
+# 重複する単語を除いて最初に出た単語だけを出力する
+def problem14
+  require 'set'
+
+  words = gets.split
+  seen = Set.new
+  
+  words.each do |w|
+     unless seen.include?(w)
+         puts w
+         seen.add(w)
+     end
+  end
+end
+
+# 指定した単語が何番目（0始まり）に出現するかを出力する
+def problem15
+  words = gets.split
+  s = gets.chomp
+  puts words.index(s) 
+end
