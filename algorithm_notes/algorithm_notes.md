@@ -282,6 +282,48 @@ Yes
 ```
 参考：[Ruby 3.4 リファレンスマニュアル](https://docs.ruby-lang.org/ja/latest/doc/spec=2foperator.html)
 
+## unless
+- 条件が偽またはnilの「〜ではない場合に」処理を行う条件分岐です。
+- ifの逆を表します。
+例
+```
+require 'set'
+
+words = gets.split
+seen = Set.new
+
+words.each do |w|
+  unless seen.include?(w)
+    puts w
+    seen.add(w)
+  end
+end
+# 入力：
+red green blue blue green blue
+# 出力：
+red  
+green  
+blue
+```
+解説
+このように書くことで「まだ表示されていない単語だけを出力する」ことができます。
+
+## index
+- 配列の中で、指定した要素が最初に現れる位置（インデックス番号）を返すメソッド。
+例
+```
+words = gets.split
+s = gets.chomp
+puts words.index(s) 
+# 入力：
+red green blue blue green blue
+# 出力：
+0
+```
+参考：[Ruby 3.4 リファレンスマニュアル](https://docs.ruby-lang.org/ja/latest/method/String/i/index.html)
+## rindex
+- 配列の中で、指定した要素が最後に現れる位置（インデックス番号）を返すメソッド。
+参考：[Ruby 3.4 リファレンスマニュアル](https://docs.ruby-lang.org/ja/latest/method/String/i/rindex.html)
 
 ## ４.Rubyのformatで90点止まり…100点を取るまでの試行錯誤
 [【実数をフォーマット指定して出力】複数の実数を出力（paizaランク C 相当）](https://paiza.jp/works/mondai/stdout_primer/stdout_primer__format_real_number_boss)
