@@ -325,6 +325,38 @@ red green blue blue green blue
 - 配列の中で、指定した要素が最後に現れる位置（インデックス番号）を返すメソッド。
 参考：[Ruby 3.4 リファレンスマニュアル](https://docs.ruby-lang.org/ja/latest/method/String/i/rindex.html)
 
+## each_key
+- ハッシュのキー（key）を順番に取り出すメソッド。
+参考：[Ruby 3.4 リファレンスマニュアル](https://docs.ruby-lang.org/ja/latest/method/Hash/i/each_key.html)
+## each_value
+- ハッシュの値（value）を順番に取り出すメソッド。
+参考：[Ruby 3.4 リファレンスマニュアル](https://docs.ruby-lang.org/ja/latest/method/Hash/i/each_value.html)
+## tally
+- 配列の要素を数えてハッシュで返す。
+例
+```
+words = gets.split
+counts = words.tally  
+
+counts.each_key { |w| puts w }
+counts.each_value { |c| puts c }
+# 入力：
+red green blue blue green blue
+# 出力：
+red 
+green 
+blue
+1
+2
+3
+```
+解説
+- counts = words.tally では、配列 words の各要素を数え、「キー＝要素」「値＝出現回数」のハッシュを counts に代入しています。
+- each_keyは、ハッシュのキー（単語）を順番に取り出して出力します。
+- each_valueは、ハッシュの値（出現回数）を順番に取り出して出力します。
+
+参考：[Ruby 3.4 リファレンスマニュアル](https://docs.ruby-lang.org/ja/latest/method/Enumerable/i/tally.html)
+
 ## ４.Rubyのformatで90点止まり…100点を取るまでの試行錯誤
 [【実数をフォーマット指定して出力】複数の実数を出力（paizaランク C 相当）](https://paiza.jp/works/mondai/stdout_primer/stdout_primer__format_real_number_boss)
 こちらの問題で、formatを使用してもテストケース9だけがどうしてもクリアできませんでした...
