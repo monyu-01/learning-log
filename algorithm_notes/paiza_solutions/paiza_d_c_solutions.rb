@@ -132,3 +132,25 @@ def problem16
   counts.each_key { |w| puts w }
   counts.each_value { |c| puts c }
 end
+
+# 入力された単語を数え、各単語とその出現回数をセットで出力するプログラム
+# Hashを使って手動でカウントする方法
+def problem17
+  words = gets.split
+  counts = Hash.new(0)
+  
+  words.each { |w| counts[w] += 1 }
+  counts.each do |word, count|
+    puts "#{word} #{count}"
+  end
+end
+
+# tallyメソッドを使って自動でカウントする方法
+def problem18
+  words = gets.split
+  counts = words.tally
+  
+  counts.each do |word, count|
+    puts "#{word} #{count}"
+  end
+end
