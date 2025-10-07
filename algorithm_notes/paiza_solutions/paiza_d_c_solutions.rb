@@ -123,3 +123,12 @@ def problem15
   s = gets.chomp
   puts words.index(s) 
 end
+
+# 入力された単語を数え、各単語とその出現回数を出力するプログラム
+def problem16
+  words = gets.split
+  counts = words.tally  
+  
+  counts.each_key { |w| puts w }
+  counts.each_value { |c| puts c }
+end
