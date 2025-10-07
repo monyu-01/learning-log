@@ -354,10 +354,52 @@ blue
 - counts = words.tally では、配列 words の各要素を数え、「キー＝要素」「値＝出現回数」のハッシュを counts に代入しています。
 - each_keyは、ハッシュのキー（単語）を順番に取り出して出力します。
 - each_valueは、ハッシュの値（出現回数）を順番に取り出して出力します。
-
 参考：[Ruby 3.4 リファレンスマニュアル](https://docs.ruby-lang.org/ja/latest/method/Enumerable/i/tally.html)
 
-## ４.Rubyのformatで90点止まり…100点を取るまでの試行錯誤
+## Hash
+- hashは、キー（名前）と値（データ）をセットにして保存する仕組みを持つクラスです。
+- 単語の出現回数を数える場合、キーを単語、値をカウントに使うことができます。
+例
+```
+words = gets.split
+counts = Hash.new(0)
+
+words.each { |w| counts[w] += 1 }
+counts.each do |word, count|
+  puts "#{word} #{count}"
+end
+# 入力：
+# red green blue blue green blue
+# 出力：
+# red 1
+# green 2
+# blue 3
+```
+解説
+- Hash.new(0)：- キーごとの初期値を0にして、カウント用のハッシュを作成します。
+- words.each：ループで1単語ずつカウントします。
+- counts.each：ハッシュを1組ずつ取り出して出力します。
+
+tallyを使用する例
+```
+words = gets.split
+counts = words.tally
+
+counts.each do |word, count|
+  puts "#{word} #{count}"
+end
+# 入力：
+# red green blue blue green blue
+# 出力：
+# red 1
+# green 2
+# blue 3
+```
+解説
+- tallyは自動でカウントしてくれるのでメソッドなので、今回はHashを使いtallyが内部で行なっている処理を手動で実装し理解を深めました。
+参考：[Ruby 3.4 リファレンスマニュアル](https://docs.ruby-lang.org/ja/latest/class/Hash.html)
+
+## 3.Rubyのformatで90点止まり…100点を取るまでの試行錯誤
 [【実数をフォーマット指定して出力】複数の実数を出力（paizaランク C 相当）](https://paiza.jp/works/mondai/stdout_primer/stdout_primer__format_real_number_boss)
 こちらの問題で、formatを使用してもテストケース9だけがどうしてもクリアできませんでした...
 どうやらその原因は、to_fとformatは、2進数による浮動小数点計算では対応できない値の結果により、丸められ誤差が生じるようです。
