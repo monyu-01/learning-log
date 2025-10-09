@@ -399,6 +399,47 @@ end
 - tallyは自動でカウントしてくれるのでメソッドなので、今回はHashを使いtallyが内部で行なっている処理を手動で実装し理解を深めました。
 参考：[Ruby 3.4 リファレンスマニュアル](https://docs.ruby-lang.org/ja/latest/class/Hash.html)
 
+
+## 論理演算子(宝くじ)
+-  || は「または（OR）」を意味し、どちらか一方の結果が真（true）であった場合に真を返す論理演算子です。
+```
+b = gets.to_i　# 基準となる当選番号         
+n = gets.to_i  # 比較する番号の個数       
+a = n.times.map { gets.to_i }  # n回整数を入力し、配列aに格納
+
+a.each do |e|          
+  result = 'blank' # 初期値として「はずれ」を代入
+
+  if e == b
+    result = 'first'　# 完全一致　          
+  elsif e + 1 == b || e - 1 == b　
+    result = 'adjacent' # 前後1番違      
+  elsif e % 10_000 == b % 10_000 # 下4桁が一致
+    result = 'second'         
+  elsif e % 1000 == b % 1000　# 下3桁が一致
+    result = 'third'          
+  end
+
+  puts result
+end
+# 入力：
+# 142358  
+# 3  
+# 195283  
+# 167358  
+# 142359
+# 出力：
+# blank  
+# third  
+# adjacent
+```
+解説
+- %（剰余演算子）を使うと、数値を割ったときの“余り”を求めることができます。
+- たとえば 142358 を 10_000 で割ると、余りは 2358 となり、下4桁だけを取り出せます。
+参考：[Ruby 3.4 リファレンスマニュアル](https://docs.ruby-lang.org/ja/latest/doc/spec=2foperator.html)
+参考：[論理演算子の種類と使い方](https://www.javadrive.jp/ruby/if/index4.html)
+参考：[剰余演算子](https://wa3.i-3-i.info/word15339.html)
+
 ## 3.Rubyのformatで90点止まり…100点を取るまでの試行錯誤
 [【実数をフォーマット指定して出力】複数の実数を出力（paizaランク C 相当）](https://paiza.jp/works/mondai/stdout_primer/stdout_primer__format_real_number_boss)
 こちらの問題で、formatを使用してもテストケース9だけがどうしてもクリアできませんでした...
