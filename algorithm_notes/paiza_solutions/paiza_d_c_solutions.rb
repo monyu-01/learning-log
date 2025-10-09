@@ -154,3 +154,26 @@ def problem18
     puts "#{word} #{count}"
   end
 end
+
+# 入力された番号と当選番号を比べて、当たりの種類を判定するプログラム
+def problem19
+  b = gets.to_i
+  n = gets.to_i
+  a = n.times.map { gets.to_i }
+  
+  a.each do |e|
+    result = 'blank'  # はずれを初期値として代入
+  
+    if e == b
+      result = 'first'            # 完全一致
+    elsif e + 1 == b || e - 1 == b
+      result = 'adjacent'         # 前後1番違い
+    elsif e % 10_000 == b % 10_000
+      result = 'second'           # 下4桁一致
+    elsif e % 1000 == b % 1000
+      result = 'third'            # 下3桁一致
+    end
+  
+    puts result
+  end
+end
