@@ -177,3 +177,56 @@ def problem19
     puts result
   end
 end
+
+# 投球結果の表示
+# strike か ball の結果が与えられ、strike の場合は "!" をつけて出力。
+def problem20
+  n = gets.to_i
+  n.times do 
+    s = gets.chomp
+    if s == "ball"
+        puts s
+    else
+        puts s + "!"
+    end
+  end
+end
+
+# strike数のカウント表示
+# strike が来るたびにカウントアップし、何回目の strike! かを表示する。ball の場合はそのまま表示。
+def problem21
+  n = gets.to_i
+  count = 0
+  
+  n.times do
+      s = gets.chomp
+      if s == "strike"
+          count += 1
+          puts s + "!"
+          puts count
+      else
+          puts "ball"
+      end
+  end
+end
+
+# 3ストライクで out!
+# strike が3回になった時に "out!" を出力。それまでは strike! を出力。ball の場合はそのまま表示。
+def problem22
+  n = gets.to_i
+  count = 0
+  
+  n.times do
+    s = gets.chomp
+    if s == "ball"
+      puts s
+    elsif s == "strike"
+      count += 1
+      if count == 3
+        puts "out!"
+      else
+        puts "strike!"
+      end
+    end
+  end
+end
