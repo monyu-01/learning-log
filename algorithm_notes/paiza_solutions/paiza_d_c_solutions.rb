@@ -230,3 +230,62 @@ def problem22
     end
   end
 end
+
+# 3ストライクで out!
+# 4ボールで fourball!
+# strike が3回になった時に "out!" を出力。それまでは strike! を出力。
+# ball が4回になった時に "fourball!" を出力。それまでは ball! を出力。
+def problem23
+  n = gets.to_i
+  results = n.times.map{ gets.chomp }
+  
+  strike = 0
+  ball = 0 
+  
+  results.each do |res|
+      msg = ''
+      # まだ中身の入っていない箱を用意する
+      if res == 'strike'
+          strike += 1
+          if strike == 3
+              msg = 'out!'
+              # その箱の中に文字を代入する
+          else 
+              msg = 'strike!'
+          end
+      elsif res == 'ball'
+          ball += 1
+          if ball == 4
+              msg ='fourball!'
+          else 
+              msg = 'ball!'
+          end
+      end
+      puts msg
+  end
+end
+
+def problem24
+  # 1行目を取得して、NとMに分ける
+  n, m = gets.split.map(&:to_i)
+  # 取得した数をそのまま出力
+  puts "#{n} #{m}"
+  
+  # M回繰り返して、Wの数を出力
+  m.times do 
+      w = gets.to_i
+      puts w
+  end
+end
+
+def problem25
+  n, m = gets.split.map(&:to_i)
+  m.times do 
+      w = gets.to_i
+      if w % n == 0
+          puts 'Yes'
+      else
+          puts 'No'
+      end
+  end
+end
